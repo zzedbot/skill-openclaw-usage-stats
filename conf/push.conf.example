@@ -1,0 +1,16 @@
+# OpenClaw Usage Stats - 推送配置示例
+# 复制此文件为 push.conf 并填入实际的 yzjtoken
+
+# 云之家 webhook 推送地址
+# 格式：https://www.yunzhijia.com/gateway/robot/webhook/send?yzjtype=0&yzjtoken=YOUR_TOKEN
+PUSH_URL="https://www.yunzhijia.com/gateway/robot/webhook/send?yzjtype=0&yzjtoken=xxxxxxxxxxxxxxx"
+
+# 推送开关 (true/false)
+PUSH_ENABLED=false
+
+# 推送时间（可选，留空则立即推送）
+# PUSH_SCHEDULE="0 9 * * 1-5"  # 工作日早上 9 点
+PUSH_SCHEDULE=""
+
+# 推送标签（可选，用于标识报告来源）
+PUSH_LABEL="OpenClaw Usage Report"
