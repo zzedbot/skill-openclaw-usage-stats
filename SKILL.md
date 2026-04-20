@@ -207,7 +207,7 @@ python3 scripts/estimate_tokens.py \
 
 **定时任务配置**：
 - 使用 `daily_push.sh` 脚本，每日自动收集 62 天数据
-- 或配置 OpenClaw cron 每天执行一次
+- 或配置 OpenClaw cron 每天执行一次（详见下文"定时任务配置"章节）
 
 ### 生成报告
 
@@ -294,6 +294,62 @@ _本周 (2026-04-13 ~ 2026-04-16)_
 ### 推送配置
 
 推送相关的敏感信息存放在 `conf/push.conf` 配置文件中：
+
+### 定时任务配置
+
+**使用 OpenClaw Cron 配置每日自动推送**：
+
+```bash
+# 创建定时任务（每天 23:00 执行）
+openclaw cron add \
+  --name "OpenClaw Usage Stats - 每日推送" \
+  --schedule "0 23 * * *" \
+  --timezone "Asia/Shanghai" \
+  --message "请执行 OpenClaw Usage Stats 技能的每日推送任务：
+
+1. 执行 daily_push.sh 脚本：/root/.openclaw/skills/openclaw-usage-stats/scripts/daily_push.sh
+
+2. 该脚本会：
+   - 收集 62 天完整数据（用于前端 HTML 报告）
+   - 收集本周数据（用于推送消息）
+   - 生成并部署 HTML 报告
+   - 推送本周数据到云之家群聊
+
+3. 推送的消息应显示\"本周\"数据，而非 62 天数据
+
+4. 推送消息末尾应包含完整报告链接：https://yunzhijiachannel.kingdee.space/reports/"
+  --target isolated \
+  --delivery-mode none
+```
+
+**配置说明**：
+
+| 参数 | 值 | 说明 |
+|------|-----|------|
+| `--schedule` | `0 23 * * *` | 每天 23:00 执行（确保获取完整当天数据） |
+| `--timezone` | `Asia/Shanghai` | 时区 |
+| `--target` | `isolated` | 在隔离会话中执行 |
+| `--delivery-mode` | `none` | 推送由脚本自己处理，不需要 cron 的 delivery |
+
+**查看定时任务**：
+```bash
+openclaw cron list
+```
+
+**手动触发定时任务**：
+```bash
+openclaw cron run --id <job-id> --force
+```
+
+**删除定时任务**：
+```bash
+openclaw cron remove --id <job-id>
+```
+
+**注意事项**：
+- 推送由 `daily_push.sh` 脚本自己处理，因此 `delivery.mode` 设为 `none`
+- 23:00 执行可以确保获取当天的完整数据
+- 脚本会自动生成两份数据：62 天完整数据（前端报告）+ 本周数据（推送）
 
 ```ini
 # 云之家 webhook 地址
